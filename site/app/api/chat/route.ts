@@ -1,6 +1,6 @@
 import { briefingContext } from "@/lib/briefing";
 
-const MODEL = process.env.OPENROUTER_MODEL || "google/gemini-3.5-flash";
+const MODEL = process.env.EUDAI_MODEL || "google/gemini-3.5-flash";
 const MAX_MESSAGES = 12;
 const MAX_CHARS = 2000;
 
@@ -18,10 +18,10 @@ function cleanMessages(value: unknown) {
 }
 
 export async function POST(request: Request) {
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = process.env.EUDAI_OPENROUTER_API_KEY;
   if (!apiKey) {
     return Response.json(
-      { error: "Add OPENROUTER_API_KEY in the Vercel project settings, then ask again." },
+      { error: "This site has no model key yet. Add a new EUDAI_OPENROUTER_API_KEY on the eudai project, then ask again." },
       { status: 503 },
     );
   }
