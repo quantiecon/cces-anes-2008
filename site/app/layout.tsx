@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Newsreader, Source_Sans_3 } from "next/font/google";
+import { Nav } from "@/components/nav";
+import { Chat } from "./chat";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -22,7 +24,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${newsreader.variable} ${sourceSans.variable} h-full`}>
-      <body className="min-h-full antialiased">{children}</body>
+      <body className="min-h-full antialiased">
+        <Nav />
+        {children}
+        <Chat />
+      </body>
     </html>
   );
 }

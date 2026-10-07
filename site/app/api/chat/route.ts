@@ -1,4 +1,21 @@
 import { briefingContext } from "@/lib/briefing";
+import knowledge from "@/data/knowledge.json";
+
+type Note = { id: string; title: string; text: string; source: string };
+
+function relevantNotes(question: string) {
+  const words = question.toLowerCase().split(/[^a-z0-9]+/).filter((word) => word.length > 3);
+  const ranked = (knowledge as Note[])
+    .map((note) => {
+      const haystack = `${note.title} ${note.text}`.toLowerCase();
+      const score = words.reduce((sum, word) => sum + (haystack.includes(word) ? 1 : 0), 0);
+      return { note, score };
+    })
+    .sort((a, b) => b.score - a.score);
+  const picked = ranked.filter((item) => item.score > 0).slice(0, 4);
+  const notes = (picked.length > 0 ? picked : ranked.slice(0, 3)).map((item) => item.note);
+  return notes.map((note) => `${note.title}: ${note.text} Source: ${note.source}`).join("\n");
+}
 
 const MODEL = process.env.EUDAI_MODEL || "google/gemini-3.5-flash";
 const MAX_MESSAGES = 12;
@@ -51,7 +68,7 @@ export async function POST(request: Request) {
       messages: [
         {
           role: "system",
-          content: `You are the briefing assistant for a political science group presentation. Write in plain sentences. Do not invent coefficients, sample sizes, or method steps. ${briefingContext}`,
+          content: `You are the briefing assistant for a political science group presentation. Write in plain sentences. Use the notes when they answer the question, and cite a source URL when you rely on one. Do not invent coefficients, sample sizes, or method steps. Notes:\n${relevantNotes(messages[messages.length - 1].content)}\n\n${briefingContext}`,
         },
         ...messages,
       ],

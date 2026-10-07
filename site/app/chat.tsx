@@ -7,7 +7,7 @@ type Message = { role: "user" | "assistant"; content: string };
 const starters = [
   "What is a target row?",
   "Why do the party slopes match?",
-  "Does the sample include nonvoters?",
+  "Does the sample include people who did not vote?",
 ];
 
 export function Chat() {
@@ -55,8 +55,8 @@ export function Chat() {
         <section className="flex h-[min(34rem,calc(100vh-6rem))] w-full flex-col border border-line bg-paper shadow-none">
           <header className="flex items-start justify-between gap-4 border-b border-line px-4 py-3">
             <div>
-              <p className="text-xs font-semibold tracking-[0.16em] uppercase text-muted">Ask the briefing</p>
-              <p className="mt-1 text-sm text-muted">Gemini 3.5 Flash, grounded in this page.</p>
+              <p className="text-xs font-semibold tracking-[0.16em] uppercase text-muted">Ask about this briefing</p>
+              <p className="mt-1 text-sm text-muted">Gemini 3.5 Flash. Answers draw on this page.</p>
             </div>
             <button type="button" className="text-sm text-muted hover:text-ink" onClick={() => setOpen(false)}>
               Close

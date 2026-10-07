@@ -1,0 +1,50 @@
+[
+  {
+    "id": "question",
+    "title": "Research question",
+    "text": "Ansolabehere and Rivers (2013) ask whether the matched and weighted 2008 CCES recovers the same party-vote relationship as the ANES and the same presidential margins as the official returns. The ANES post-election interview is about 2,100 people. The matched CCES is 32,800.",
+    "source": "https://doi.org/10.1146/annurev-polisci-022811-160625"
+  },
+  {
+    "id": "hypothesis",
+    "title": "Hypothesis",
+    "text": "Ignorability: given age, race, education, party, registration, and related traits, volunteering for the panel should not predict the vote. The claim is about the matched sample, not the raw volunteer list. Published party slopes are -0.313 (CCES) and -0.312 (ANES). Vote is +1 Obama, -1 McCain, 0 other.",
+    "source": "https://doi.org/10.1146/annurev-polisci-022811-160625"
+  },
+  {
+    "id": "target",
+    "title": "Target row and distance",
+    "text": "A target row is one person-record from the 2006 American Community Survey, drawn inside an age by race by gender by education cell. Registration and turnout come from the Current Population Survey. Religion, party, and news interest come from the Pew Religious Landscape Study. The frame is U.S. citizens, including nonvoters. One search per target keeps the closest of about 50,800 finished interviews. A race mismatch costs 10, gender 1.5, thirty years of age costs 1, party 1.5, registration up to 4. A weak match is kept. The function is in the 2008 CCES guide, not in analysis.py.",
+    "source": "https://doi.org/10.7910/DVN/YUYIVB"
+  },
+  {
+    "id": "weights",
+    "title": "Weights",
+    "text": "The released CCES weight is V201. A logistic propensity model uses age, education, gender, and turnout. Gender, race, education, and age are raked to the citizen frame. Weights above 7 are trimmed, then rescaled so the average weight is 1. Rescaling does not change slopes or percentages. In this file weights run from 0.30 to 6.49. The ANES post weight is V080102.",
+    "source": "https://doi.org/10.7910/DVN/YUYIVB"
+  },
+  {
+    "id": "results",
+    "title": "Shared regression results",
+    "text": "Shared weighted model, party slope: CCES -0.317 (N 23681, SE 0.002) and ANES -0.317 (N 1538, SE 0.010). Age per 10 years -0.040 vs -0.050. Black +0.260 vs +0.325. Hispanic +0.063 vs +0.159. Other race +0.014 vs +0.259. Full CCES party slope -0.314 (N 22223) versus published -0.313 (N 25814). Weights off: CCES party -0.320, ANES party -0.293.",
+    "source": "https://github.com/quantiecon/cces-anes-2008"
+  },
+  {
+    "id": "shares",
+    "title": "Vote shares, states, turnout",
+    "text": "Two-party Obama share: CCES 53.9 percent, ANES 54.9 percent. CCES Hispanic voters 65.8 percent Obama. ANES Latino voters 77 percent. The article's exit-poll figure for Hispanic voters is about 67 percent. Fifty states: mean error +1.00 points, RMSE 3.43. The article reports +0.27 and 2.43. After weighting, 70.7 percent of the CCES say they voted. Eligible-citizen turnout was about 62 percent.",
+    "source": "https://www.electproject.org/2008g"
+  },
+  {
+    "id": "replication-limits",
+    "title": "What the replication did not do",
+    "text": "The script uses V201 and does not rebuild matching, the propensity model, or the trim. The ANES extract lacks gender, education, self-reported income, and home ownership. Extensions that are not in the 2013 article: House party -0.298, Senate -0.306, governor -0.289. Adding ideology and three issues cuts the presidential party slope from -0.314 to -0.170 on 17,318 respondents.",
+    "source": "https://github.com/quantiecon/cces-anes-2008"
+  },
+  {
+    "id": "conclusion",
+    "title": "Article conclusion",
+    "text": "The article concludes that a matched, weighted cooperative internet sample can recover the electoral relationships of a face-to-face probability survey, for outcomes tied to the matching variables, under ignorability. Rivers founded Polimetrix, which YouGov bought, and was YouGov's chief scientist. The replication reproduces the party result and supports the state result in size rather than to the published decimal.",
+    "source": "https://doi.org/10.1146/annurev-polisci-022811-160625"
+  }
+]
