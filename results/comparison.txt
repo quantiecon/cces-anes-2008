@@ -1,0 +1,140 @@
+Published Table 5 party coefficients: ANES -0.312 (N=1436), CCES -0.313 (N=25814).
+ANES file has no gender, education, self-reported income, or home ownership,
+so those four coefficients are estimated on the CCES only.
+CCES race is one question (Hispanic is a category). ANES asks race and Latino status separately.
+
+CCES weighted linear model (paper's covariate list)
+  N = 22223
+  R-squared = 0.642
+  const       +1.300  (0.025)
+  party       -0.314  (0.002)
+  age10       -0.029  (0.004)
+  female      -0.006  (0.010)
+  education   +0.031  (0.004)
+  income      +0.002  (0.002)
+  homeowner   -0.093  (0.013)
+  black       +0.264  (0.016)
+  hispanic    +0.078  (0.023)
+  other_race  +0.007  (0.024)
+
+CCES unweighted linear model (same covariates)
+  N = 22223
+  R-squared = 0.650
+  const       +1.292  (0.020)
+  party       -0.320  (0.001)
+  age10       -0.025  (0.003)
+  female      +0.011  (0.008)
+  education   +0.033  (0.003)
+  income      +0.001  (0.001)
+  homeowner   -0.089  (0.010)
+  black       +0.255  (0.014)
+  hispanic    +0.054  (0.018)
+  other_race  -0.040  (0.019)
+
+CCES weighted linear model (covariates also in the ANES file)
+  N = 23681
+  R-squared = 0.640
+  const       +1.413  (0.016)
+  party       -0.317  (0.002)
+  age10       -0.040  (0.003)
+  black       +0.260  (0.015)
+  hispanic    +0.063  (0.022)
+  other_race  +0.014  (0.024)
+
+ANES weighted linear model (covariates also in the ANES file)
+  N = 1538
+  R-squared = 0.588
+  const       +1.472  (0.071)
+  party       -0.317  (0.010)
+  age10       -0.050  (0.011)
+  black       +0.325  (0.045)
+  hispanic    +0.159  (0.055)
+  other_race  +0.259  (0.097)
+
+ANES unweighted linear model (same shared covariates)
+  N = 1538
+  R-squared = 0.596
+  const       +1.376  (0.060)
+  party       -0.293  (0.008)
+  age10       -0.049  (0.009)
+  black       +0.369  (0.039)
+  hispanic    +0.177  (0.051)
+  other_race  +0.261  (0.083)
+
+CCES weighted logit, Obama vs McCain (other candidates dropped)
+  N = 21874
+  const       +4.693  (0.124)
+  party       -1.117  (0.015)
+  age10       -0.148  (0.017)
+  female      -0.036  (0.051)
+  education   +0.168  (0.017)
+  income      +0.006  (0.008)
+  homeowner   -0.506  (0.063)
+  black       +2.730  (0.147)
+  hispanic    +0.321  (0.100)
+  other_race  +0.049  (0.096)
+
+ANES weighted logit, Obama vs McCain (shared covariates)
+  N = 1513
+  const       +5.199  (0.343)
+  party       -1.077  (0.056)
+  age10       -0.221  (0.048)
+  black       +4.608  (1.227)
+  hispanic    +0.681  (0.388)
+  other_race  +1.309  (0.391)
+
+Weighted two-party Obama share (Obama / (Obama + McCain))
+  CCES all                  53.9%   n=23585
+  CCES men                  50.7%   n=11770
+  CCES women                57.0%   n=11815
+  CCES white                46.5%   n=19889
+  CCES black                96.3%   n=1361
+  CCES hispanic             65.8%   n=1191
+  ANES all                  54.9%   n=1539
+  ANES white, non-Latino    44.2%   n=799
+  ANES black                99.6%   n=418
+  ANES latino               77.0%   n=275
+
+Presidential two-party Democratic share, 50 states.
+  Mean survey minus actual: +1.00%
+  RMSE: 3.43%
+  Among states with at least 200 two-party voters (n=34): bias +0.81%, RMSE 3.55%
+  Paper's 2008 presidential row: bias +0.27 points, RMSE 2.43 points.
+
+Extensions beyond Table 5
+
+1. Same covariates, different office. Democrat = 1, Republican = -1.
+  President    party -0.314 (0.002)   R2 0.642   N 22223
+  U.S. House   party -0.298 (0.002)   R2 0.556   N 18878
+  U.S. Senate  party -0.306 (0.003)   R2 0.601   N 10730
+  Governor     party -0.289 (0.005)   R2 0.494   N 3298
+
+2. Presidential vote with ideology and issues, same respondents in both columns.
+  Ideology is 1 very liberal to 5 very conservative.
+  Health opposition is 1 strongly support guaranteed insurance to 4 strongly oppose.
+  Tax-cut scale is 0 all tax increases to 10 all spending cuts.
+  Carbon oppose is 1 if opposed and 0 if supported.
+  Party without issues  -0.314 (0.002)   R2 0.649   N 17318
+  Party with issues     -0.170 (0.004)   R2 0.741
+  ideology         -0.074 (0.006)
+  health_oppose    -0.281 (0.008)
+  tax_cut10        -0.015 (0.003)
+  carbon_oppose    -0.120 (0.014)
+
+3. Party slope by information, presidential vote.
+  Follows news most of the time (N reference group is the complement):
+    Less attentive     party -0.304 (0.003)
+    Most attentive     party -0.320 (0.002)
+    Difference         -0.016 (0.003)   N 22133   baseline party on this sample -0.315
+  Knows Democrats held the House:
+    Does not know      party -0.290 (0.004)
+    Knows              party -0.322 (0.002)
+    Difference         -0.032 (0.004)   N 22142
+
+4. Why state presidential errors differ.
+  Outcome is survey minus official two-party Democratic share, in points.
+  N states 50   R2 0.149
+  const          +5.152 (2.314)
+  log_n          -0.976 (0.396)
+  black_pct      +0.137 (0.056)
+  hispanic_pct   +0.034 (0.054)
