@@ -1,3 +1,5 @@
+import { Chat } from "./chat";
+
 const nav = [
   { href: "#question", label: "Question", who: "Opening" },
   { href: "#why", label: "Why it matters", who: "Opening" },
@@ -267,8 +269,9 @@ export default function Home() {
         </section>
       </main>
 
+      <Chat />
       <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-8 text-sm text-muted md:flex-row md:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-8 pb-24 text-sm text-muted md:flex-row md:justify-between">
           <p>Ansolabehere & Rivers 2013 · 2008 CCES · 2008 ANES Time Series</p>
           <p>Abdullah · Amelie · Eric · Rahel</p>
         </div>
