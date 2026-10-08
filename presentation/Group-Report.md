@@ -84,24 +84,35 @@ The **2008 CCES** is a volunteer internet survey run by YouGov, formerly Polimet
 
 **The target.** YouGov builds a synthetic portrait of U.S. citizens from the 2006 American Community Survey: age, race, gender, education, marital status, children, family income, employment, citizenship, state, and metropolitan area. Registration and turnout come from the November 2004 Current Population Survey. Religion, church attendance, born-again status, news interest, party identification, and ideology come from the 2007 Pew Religious Landscape Survey. A target sample is then drawn so that age, race, gender, and education match the country. Each target row is a description, not a person who can be emailed.
 
-**The distance.** For each description, YouGov searches the completed interviews and keeps the panelist with the smallest weighted distance. The 2008 formula, printed in the study guide, is a sum of penalties:
+**The distance.** For each description, YouGov searches the completed interviews and keeps the panelist with the smallest distance. The score is a penalty. A higher total is a worse fit, and the lowest total wins. The 2008 study guide prints the function. In plain terms it is:
 
-- gender difference costs 1.5
+- a gender difference costs 1.5
 - each year of age costs 1/30, so a 30-year gap costs 1
+- crossing one age-group boundary (18–29, 30–64, 65 or older) costs 0.5
 - a race mismatch costs 10
 - a region mismatch costs 1
-- six years of education costs 1
+- each year of schooling costs 1/6, so six years costs 1
 - a party-identification mismatch costs 1.5
-- a registration mismatch costs up to 4
-- income is divided by 15, so income is allowed to be somewhat off
+- an ideology mismatch costs 1
+- a religion mismatch costs 0.5, and a news-interest mismatch costs 0.5
+- a registration mismatch costs as much as 4
+- income, marital status, church attendance, and metro status are looked up in distance tables and then divided by 15, 4, 10, and 2
 
-A larger penalty means that factor has to match. Because race costs 10 and almost everything else costs about 1, the nearest panelist is almost always someone of the same race. The kept sample is forced to have nearly the same mix of race, gender, age, education, region, party, and registration as the target. That is how a skewed panel becomes a sample whose margins look like the country **on the factors in the formula**. An attitude that is unrelated to those factors is not balanced.
+Age, race, gender, and education are the traits the target is stratified on, and the interviews were invited with those four plus state. Inside the distance itself, race dominates. A larger penalty means that factor has to match. Because race costs 10 and almost everything else costs about 1, the nearest panelist is almost always someone of the same race. The kept sample is forced to have nearly the same mix of race, gender, age, education, region, party, and registration as the target. That is how a skewed panel becomes a sample whose margins look like the country **on the factors in the formula**. An attitude that is unrelated to those factors is not balanced.
+
+One target makes the arithmetic concrete. Suppose the record is a woman, age 34, white, with 16 years of school, living in the South, married, a Democrat, Catholic, and registered, in a given income bracket. A woman of 40 who matches every other listed trait scores 6/30 = 0.20. A man who matches every other trait scores 1.5. A woman of a different race who matches every other trait scores 10. YouGov keeps the 40-year-old. Income can be a bracket or two off without changing that result, because that term is divided by 15.
+
+The same search can, in the guide’s general description, attach more than one panelist to a target. The number 7 is a different rule, and it comes later. After the matches are chosen, any survey weight larger than 7 is cut to 7. It is not a cap of seven reuses during the search.
 
 This function does not live in our analysis code. YouGov ran it before releasing the file. The code reads the weight column that the matching and the next step left behind.
 
 **The propensity score.** Matching is close, not exact. YouGov stacks the matched interviews and the target frame and estimates a logistic regression for the probability that a row came from the frame. In 2008 that regression uses age, years of education, gender, and turnout. Logistic regression is a regression whose output is a probability between 0 and 1. That probability is the propensity score. People whose characteristics are common in the internet sample and rare in the frame are down-weighted. The scores are cut into ten bins and adjusted so each bin is a tenth of the weighted sample. A further raking step forces the weighted margins of gender, race, education, and age to match the frame. Any weight above 7 is cut to 7, so one unusual person cannot count as more than seven interviews.
 
-**Rescaling.** Multiplying every weight by the same constant does not change a weighted percentage or a regression slope. After trimming and raking, YouGov divides through so the weights sum to the number of interviews. The average weight is then 1. A weight of 2 means “count this interview twice.” The reported sample size stays the number of people who answered.
+**Rescaling.** After the cut at 7, YouGov divides every weight by the same constant so the weights sum to the number of interviews. The average weight is then 1. A weight of 2 means “count this interview twice.” The reported sample size stays the number of people who answered. In the released file, column V201 runs from 0.30 to 6.49. The top is under 7 because the division comes after the cut.
+
+Multiplying every weight by the same constant does not change a weighted percentage or a regression slope. An Obama voter with weight 2 and a McCain voter with weight 1 put Obama at two thirds. Multiply both weights by any constant and the share is still two thirds. The same cancellation holds in weighted least squares.
+
+The rerun reads those finished weights and does not rebuild them. On the full CCES list, the party coefficient is −0.314 with V201 and −0.320 with every weight set to 1. The matched interviews already hold the relationship. Removing the ANES weight moves its party coefficient from −0.317 to −0.293. After the same weighting, 70.7 percent of the CCES say they voted, against about 62 percent of eligible citizens.
 
 ### The comparison equation
 

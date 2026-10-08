@@ -15,7 +15,7 @@ export function Nav() {
   const path = usePathname();
   return (
     <header className="sticky top-0 z-10 border-b border-line bg-paper/95 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-x-8 gap-y-2 px-5 py-3">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-x-8 gap-y-2 px-5 py-3">
         <Link href="/" className="text-sm font-semibold tracking-[0.18em] uppercase">
           Eudai
         </Link>

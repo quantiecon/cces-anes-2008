@@ -18,7 +18,7 @@ const sourceSans = Source_Sans_3({
 export const metadata: Metadata = {
   title: "Cooperative Survey Research — CCES and the ANES",
   description:
-    "A briefing on Ansolabehere and Rivers (2013): whether a matched internet sample can stand in for the American National Election Studies.",
+    "A briefing on whether a matched internet survey can stand in for the American National Election Studies, following Ansolabehere and Rivers (2013).",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

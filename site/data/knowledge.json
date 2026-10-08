@@ -32,7 +32,7 @@
   {
     "id": "shares",
     "title": "Vote shares, states, turnout",
-    "text": "Two-party Obama share: CCES 53.9 percent, ANES 54.9 percent. CCES Hispanic voters 65.8 percent Obama. ANES Latino voters 77 percent. The article's exit-poll figure for Hispanic voters is about 67 percent. Fifty states: mean error +1.00 points, RMSE 3.43. The article reports +0.27 and 2.43. After weighting, 70.7 percent of the CCES say they voted. Eligible-citizen turnout was about 62 percent.",
+    "text": "Two-party Obama share, survey beside the election. All voters: CCES 53.9, ANES 54.9, certified national count 53.7. White: CCES 46.5, ANES 44.2, exit poll two-party 43.9 (published 43). Black: CCES 96.3, ANES 99.6, exit poll two-party 96.0 (published 95). Hispanic: CCES 65.8, ANES 77.0, exit poll two-party 68.4 (published 67, the figure the article cites). Other race: CCES 52.3 (n 1144), ANES 80.1 (n 48), exit poll Asian-plus-other two-party 66.4 (published Asian 62 and other 66). The election confirms the CCES shares for the country, Black voters, and Hispanic voters. It confirms the ANES for white voters. It confirms neither survey for other race. Race coefficients closer to zero in the CCES are partial effects after party and age, not these shares. Fifty states: mean error +1.00 points, RMSE 3.43. The article reports +0.27 and 2.43. After weighting, 70.7 percent of the CCES say they voted. Eligible-citizen turnout was about 62 percent.",
     "source": "https://www.electproject.org/2008g"
   },
   {

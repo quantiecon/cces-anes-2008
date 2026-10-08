@@ -5,9 +5,9 @@ import { FormEvent, useState } from "react";
 type Message = { role: "user" | "assistant"; content: string };
 
 const starters = [
-  "What is a target row?",
-  "Why do the party slopes match?",
-  "Does the sample include people who did not vote?",
+  "How does YouGov choose a match?",
+  "Why do the party results agree?",
+  "Are people who did not vote included?",
 ];
 
 export function Chat() {
