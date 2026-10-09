@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState, type RefObject } from "react";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -10,12 +10,80 @@ const starters = [
   "Are people who did not vote included?",
 ];
 
+const WORDS_PER_SECOND = 6;
+
+function initialShown(text: string, pace: boolean) {
+  const tokens = text.match(/\S+\s*/g) ?? [];
+  const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!pace || reduce || tokens.length <= 24) return text;
+  return tokens.slice(0, 4).join("");
+}
+
+function usePacedText(text: string, pace: boolean) {
+  const [shown, setShown] = useState(() => initialShown(text, pace));
+
+  useEffect(() => {
+    const tokens = text.match(/\S+\s*/g) ?? [];
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!pace || reduce || tokens.length <= 24) {
+      const frame = requestAnimationFrame(() => setShown(text));
+      return () => cancelAnimationFrame(frame);
+    }
+
+    let start = 0;
+    let frame = 0;
+    let lastCount = 0;
+    const tick = (now: number) => {
+      if (!start) start = now;
+      const count = Math.min(tokens.length, Math.max(4, Math.floor(((now - start) / 1000) * WORDS_PER_SECOND)));
+      if (count !== lastCount) {
+        lastCount = count;
+        setShown(tokens.slice(0, count).join(""));
+      }
+      if (count < tokens.length) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [text, pace]);
+
+  return shown;
+}
+
+function RevealedReply({
+  content,
+  pace,
+  logRef,
+}: {
+  content: string;
+  pace: boolean;
+  logRef: RefObject<HTMLDivElement | null>;
+}) {
+  const shown = usePacedText(content, pace);
+
+  useEffect(() => {
+    const node = logRef.current;
+    if (node) node.scrollTop = node.scrollHeight;
+  }, [shown, logRef]);
+
+  return (
+    <>
+      {shown
+        .split(/\n{2,}/)
+        .filter(Boolean)
+        .map((paragraph, paragraphIndex) => (
+          <p key={paragraphIndex}>{paragraph}</p>
+        ))}
+    </>
+  );
+}
+
 export function Chat() {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const logRef = useRef<HTMLDivElement>(null);
 
   async function ask(text: string) {
     const question = text.trim();
@@ -62,7 +130,7 @@ export function Chat() {
               Close
             </button>
           </header>
-          <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+          <div ref={logRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
             {messages.length === 0 && (
               <div className="space-y-2">
                 {starters.map((starter) => (
@@ -77,14 +145,19 @@ export function Chat() {
                 ))}
               </div>
             )}
-            {messages.map((message, index) => (
-              <p key={`${message.role}-${index}`} className={message.role === "user" ? "text-sm" : "text-sm leading-relaxed text-muted"}>
-                <span className="mb-1 block text-xs font-semibold tracking-[0.14em] uppercase">
-                  {message.role === "user" ? "You" : "Briefing"}
-                </span>
-                {message.content}
-              </p>
-            ))}
+            {messages.map((message, index) =>
+              message.role === "user" ? (
+                <p key={`${message.role}-${index}`} className="text-sm">
+                  <span className="mb-1 block text-xs font-semibold tracking-[0.14em] uppercase">You</span>
+                  {message.content}
+                </p>
+              ) : (
+                <div key={`${message.role}-${index}`} className="space-y-3 text-sm leading-relaxed text-muted">
+                  <span className="mb-1 block text-xs font-semibold tracking-[0.14em] uppercase">Briefing</span>
+                  <RevealedReply content={message.content} pace={index === messages.length - 1} logRef={logRef} />
+                </div>
+              ),
+            )}
             {pending && <p className="text-sm text-muted">Thinking…</p>}
             {error && <p className="text-sm text-[#8a4528]">{error}</p>}
           </div>

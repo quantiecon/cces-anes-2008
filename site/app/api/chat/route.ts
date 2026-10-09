@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       messages: [
         {
           role: "system",
-          content: `You are the briefing assistant for a political science group presentation. Write in plain sentences. Use the notes when they answer the question, and cite a source URL when you rely on one. Do not invent coefficients, sample sizes, or method steps. Notes:\n${relevantNotes(messages[messages.length - 1].content)}\n\n${briefingContext}`,
+          content: `You are the briefing assistant for a political science group presentation. Answer only the question that was asked. Leave out related topics, background tours, and extra sections. Simplicity matters more than coverage. Use one or two short paragraphs. Use a third paragraph only when the question is genuinely complex and a shorter answer would be misleading. Never use more than three paragraphs. Answer in ordinary sentences, the way you would say it out loud. Plain text only: no Markdown, no headings, no bold or italics, no bullets, no numbered lists, and no horizontal rules. Do not open with a title. Start with the answer. Note titles are labels for you, not lines to repeat. Use the notes when they answer the question, and cite a source URL when you rely on one. Do not invent coefficients, sample sizes, or method steps. Notes:\n${relevantNotes(messages[messages.length - 1].content)}\n\n${briefingContext}`,
         },
         ...messages,
       ],
@@ -91,9 +91,71 @@ export async function POST(request: Request) {
     ? content.map((part) => part.text || "").join("")
     : content || "";
 
-  if (!reply.trim()) {
+  const plain = toPlainProse(reply, messages[messages.length - 1].content);
+  if (!plain) {
     return Response.json({ error: "The model returned an empty answer." }, { status: 502 });
   }
 
-  return Response.json({ reply: reply.trim(), model: MODEL });
+  return Response.json({ reply: plain, model: MODEL });
+}
+
+function toPlainProse(raw: string, question = "") {
+  let text = raw.replace(/\r\n/g, "\n").trim();
+  text = text.replace(/```[\w-]*\n?([\s\S]*?)```/g, (_, code: string) => code.trim());
+  text = text.replace(/`([^`]+)`/g, "$1");
+  text = text.replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1");
+  text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, "$1 ($2)");
+  text = text.replace(/^[ \t]*#{1,6}[ \t]+/gm, "");
+  text = text.replace(/^[ \t]*[-*_]{3,}[ \t]*$/gm, "");
+  text = text.replace(/\*\*(.+?)\*\*/g, "$1");
+  text = text.replace(/__(.+?)__/g, "$1");
+  text = text.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s).,;:!?]|$)/gm, "$1$2");
+  text = text.replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?]|$)/gm, "$1$2");
+  text = text.replace(/^[ \t]*[-*+][ \t]+/gm, "");
+  text = text.replace(/^[ \t]*\d+[.)][ \t]+/gm, "");
+
+  const paragraphs = text
+    .split(/\n{2,}/)
+    .map((block) => {
+      const lines = block
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
+      const kept = lines.filter((line, index) => {
+        const title = line.length <= 80 && !/[.!?]$/.test(line) && !line.includes(": ");
+        return !(title && lines[index + 1]);
+      });
+      return kept
+        .join(" ")
+        .replace(/[ \t]{2,}/g, " ")
+        .replace(/^(?:[A-Z][A-Za-z'’-]{1,24} ){0,3}[A-Z][A-Za-z'’-]{1,24}:[ \t]+(?=[A-Za-z])/, "")
+        .trim();
+    })
+    .filter(Boolean)
+    .filter((paragraph, index, all) => {
+      const title = paragraph.length <= 80 && !/[.!?]$/.test(paragraph) && !paragraph.includes(": ");
+      return !(title && all[index + 1]);
+    });
+
+  return keepBrief(paragraphs, question);
+}
+
+function asksForMore(question: string) {
+  const marks = (question.match(/\?/g) ?? []).length;
+  if (marks >= 2) return true;
+  const asks = question.toLowerCase().match(/\b(how|why|what|when|where|whether)\b/g) ?? [];
+  if (asks.length >= 2) return true;
+  return /\b(compare|comparison|difference between|versus|vs\.?)\b/i.test(question);
+}
+
+function isCaveat(paragraph: string) {
+  return /^(however|but|still|even so|one caveat|the caveat|the exception|the limit|except|that does not|this does not)\b/i.test(
+    paragraph,
+  );
+}
+
+function keepBrief(paragraphs: string[], question: string) {
+  if (paragraphs.length <= 2) return paragraphs.join("\n\n");
+  const allowThird = asksForMore(question) || isCaveat(paragraphs[2]);
+  return paragraphs.slice(0, allowThird ? 3 : 2).join("\n\n");
 }
