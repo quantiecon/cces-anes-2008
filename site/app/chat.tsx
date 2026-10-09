@@ -26,24 +26,20 @@ function usePacedText(text: string, pace: boolean) {
     const tokens = text.match(/\S+\s*/g) ?? [];
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!pace || reduce || tokens.length <= 24) {
-      const frame = requestAnimationFrame(() => setShown(text));
-      return () => cancelAnimationFrame(frame);
+      const timer = window.setTimeout(() => setShown(text), 0);
+      return () => window.clearTimeout(timer);
     }
 
-    let start = 0;
-    let frame = 0;
-    let lastCount = 0;
-    const tick = (now: number) => {
-      if (!start) start = now;
-      const count = Math.min(tokens.length, Math.max(4, Math.floor(((now - start) / 1000) * WORDS_PER_SECOND)));
-      if (count !== lastCount) {
-        lastCount = count;
-        setShown(tokens.slice(0, count).join(""));
-      }
-      if (count < tokens.length) frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    const started = performance.now();
+    const timer = window.setInterval(() => {
+      const count = Math.min(
+        tokens.length,
+        Math.max(4, Math.floor(((performance.now() - started) / 1000) * WORDS_PER_SECOND)),
+      );
+      setShown(tokens.slice(0, count).join(""));
+      if (count >= tokens.length) window.clearInterval(timer);
+    }, 80);
+    return () => window.clearInterval(timer);
   }, [text, pace]);
 
   return shown;
